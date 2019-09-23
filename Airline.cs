@@ -9,23 +9,28 @@ namespace Project_2
 
     class Airline
     {
-        static Random rng = new Random();
+        public Int32[] pricesForWeek;
+        static Random rng = new Random(); //to generate random ticket prices
         public static event priceCutEvent priceCut;
         private static Int32 ticketPrice = 200;
-        public Int32 counter = 0;
+        public Int32 availableTickets = 500;
+        public static Int32 counter = 0;
 
         public Int32 getPrice() { return ticketPrice; }
         public static void changePrice(Int32 price)
         {
             if (price < ticketPrice)
                 if (priceCut != null)
+                {
                     priceCut(price);
+                    //increment counter
+                    counter++;
+                }
             ticketPrice = price;
         }
 
         public void airlineFunc()
         {
-            /*
             Int32[] pricesForWeek = new Int32[7];
             pricesForWeek[0] = 180; //Sunday
             pricesForWeek[1] = 100; //Monday
@@ -35,37 +40,30 @@ namespace Project_2
             pricesForWeek[5] = 120; //Friday
             pricesForWeek[6] = 200; //Saturday
             Int32 currentDay = 0; //represents day of the week
-            */
-
-            //TODO: CHANGE ITERATION NUMBER
-            for (int i = 0; i < 50; i++)
+            if (currentDay > 6)
+            {
+                currentDay = 0;
+            }
+            else
+            {
+                currentDay++;
+            }
+            while (counter <= 20)
             {
                 Thread.Sleep(500);
-                ticketPrice = pricingModel();
-                /*
-                if (currentDay > 6)
-                {
-                    currentDay = 0;
-                }
-                else
-                {
-                    currentDay++;
-                }
-                */
-                changePrice(ticketPrice);
+                ticketPrice = pricingModel(currentDay);
+                Airline.changePrice(ticketPrice);
+                Order order = MyApplication.buffer.getOneCell();
+                OrderProcessing orderProcessing = new OrderProcessing(order);
+                Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));
+                newOrder.Start();
             }
         }
 
-        public Int32 pricingModel()
+        public Int32 pricingModel(Int32 currentDay)
         {
-
-            Int32 p = rng.Next(50, 200);
+            Int32 p = pricesForWeek[currentDay];
             return p;
-        }
-
-        public void OrderProcessing()
-        {
-
         }
     }
 }

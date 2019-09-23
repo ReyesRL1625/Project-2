@@ -17,10 +17,15 @@ namespace Project_2
         {
             buffer = new Order[3];
         }
-        public void setBuffer(Order order)
+        public void setOneCell(Order order)
         {
             rwlock.AcquireWriterLock(Timeout.Infinite);
             
+        }
+
+        public Order getOneCell()
+        {
+            return order1;
         }
     }
 }
