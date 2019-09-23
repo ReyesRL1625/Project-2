@@ -8,9 +8,9 @@ namespace Project_2
     class Order
     {
         private string senderId; //= Thread.CurrentThread.Name; of travel agency
-        private Int32 cardNo;
+        private Int32 cardNo;   //credit card number
         private string receiverID;//thread name of airline
-        private Int32 amount;
+        private Int32 amount; //number of tickets to order
         private double unitPrice; //price for the bulk of tickets received from airline
 
         public string getSenderId()
