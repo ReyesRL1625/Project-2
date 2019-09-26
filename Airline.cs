@@ -40,20 +40,24 @@ namespace Project_2
             pricesForWeek[5] = 120; //Friday
             pricesForWeek[6] = 200; //Saturday
             Int32 currentDay = 0; //represents day of the week
-            if (currentDay > 6)
-            {
-                currentDay = 0;
-            }
-            else
-            {
-                currentDay++;
-            }
+
             while (counter <= 20)
             {
+                if (currentDay > 6)
+                {
+                    currentDay = 0;
+                }
+                else
+                {
+                    currentDay++;
+                }
+
                 Thread.Sleep(500);
                 ticketPrice = pricingModel(currentDay);
                 Airline.changePrice(ticketPrice);
+                //receiving order object from the multicell buffer
                 Order order = MyApplication.buffer.getOneCell();
+                //creating new order processing thread to process the order
                 OrderProcessing orderProcessing = new OrderProcessing(order);
                 Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));
                 newOrder.Start();
@@ -66,4 +70,3 @@ namespace Project_2
             return p;
         }
     }
-}
