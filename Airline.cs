@@ -10,11 +10,11 @@ namespace Project_2
     class Airline
     {
         public Int32[] pricesForWeek;
-        static Random rng = new Random(); //to generate random ticket prices
+        //static Random rng = new Random(); //to generate random ticket prices
         public static event priceCutEvent priceCut;
         private static Int32 ticketPrice = 200;
         public Int32 availableTickets = 500;
-        public static Int32 counter = 0;
+        public static Int32 numberOfPriceCuts = 0;
 
         public Int32 getPrice() { return ticketPrice; }
         public static void changePrice(Int32 price)
@@ -24,7 +24,7 @@ namespace Project_2
                 {
                     priceCut(price);
                     //increment counter
-                    counter++;
+                    numberOfPriceCuts++;
                 }
             ticketPrice = price;
         }
@@ -41,7 +41,7 @@ namespace Project_2
             pricesForWeek[6] = 200; //Saturday
             Int32 currentDay = 0; //represents day of the week
 
-            while (counter <= 20)
+            while (numberOfPriceCuts <= 20)
             {
                 if (currentDay > 6)
                 {
