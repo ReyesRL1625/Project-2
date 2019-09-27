@@ -20,6 +20,9 @@ namespace Project_2
         }
         public void setOneCell(Order order)
         {
+            Console.WriteLine("{0} called the buffer", Thread.CurrentThread.Name);
+            //order.setSenderId(Thread.CurrentThread.Name);
+            /*
             _pool.WaitOne();
             rwlock.AcquireWriterLock(Timeout.Infinite);
             try
@@ -31,6 +34,7 @@ namespace Project_2
             {
                 rwlock.ReleaseWriterLock();
             }
+            */
         }
 
         public Order getOneCell()

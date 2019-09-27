@@ -12,9 +12,16 @@ namespace Project_2
         public Int32[] pricesForWeek;
         //static Random rng = new Random(); //to generate random ticket prices
         public static event priceCutEvent priceCut;
-        private static Int32 ticketPrice = 200;
+        private static Int32 ticketPrice;
         public Int32 availableTickets = 500;
         public static Int32 numberOfPriceCuts = 0;
+        MultiCellBuffer aBuffer;
+
+        public Airline(MultiCellBuffer newBuffer)
+        {
+            aBuffer = newBuffer;
+            ticketPrice = 100;
+        }
 
         public Int32 getPrice() { return ticketPrice; }
         public static void changePrice(Int32 price)
@@ -31,7 +38,7 @@ namespace Project_2
 
         public void airlineFunc()
         {
-            Int32[] pricesForWeek = new Int32[7];
+            pricesForWeek = new Int32[7];
             pricesForWeek[0] = 180; //Sunday
             pricesForWeek[1] = 100; //Monday
             pricesForWeek[2] = 100; //Tuesday
@@ -43,7 +50,7 @@ namespace Project_2
 
             while (numberOfPriceCuts <= 20)
             {
-                if (currentDay > 6)
+                if (currentDay == 6)
                 {
                     currentDay = 0;
                 }
@@ -53,10 +60,10 @@ namespace Project_2
                 }
 
                 Thread.Sleep(500);
-                ticketPrice = pricingModel(currentDay);
-                Airline.changePrice(ticketPrice);
+                Int32 newPrice = pricingModel(currentDay);
+                Airline.changePrice(newPrice);
                 //receiving order object from the multicell buffer
-                Order order = MyApplication.buffer.getOneCell();
+                Order order = aBuffer.getOneCell();
                 //creating new order processing thread to process the order
                 OrderProcessing orderProcessing = new OrderProcessing(order);
                 Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));
@@ -70,3 +77,4 @@ namespace Project_2
             return p;
         }
     }
+}
