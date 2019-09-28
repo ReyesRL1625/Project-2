@@ -9,18 +9,30 @@ namespace Project_2
 
     class Airline
     {
-        public Int32[] pricesForWeek;
-        //static Random rng = new Random(); //to generate random ticket prices
+        //define a price cut event named 
         public static event priceCutEvent priceCut;
+        public Int32[] pricesForWeek;
         private static Int32 ticketPrice;
         public Int32 availableTickets = 500;
         public static Int32 numberOfPriceCuts = 0;
         MultiCellBuffer aBuffer;
+        ConfirmationBuffer aConfirmBuffer;
+        private Int32 currentDay;
 
-        public Airline(MultiCellBuffer newBuffer)
+        public Airline(MultiCellBuffer newBuffer, ConfirmationBuffer newCBufffer)
         {
             aBuffer = newBuffer;
+            aConfirmBuffer = newCBufffer;
             ticketPrice = 100;
+            pricesForWeek = new Int32[7];
+            pricesForWeek[0] = 180; //Sunday
+            pricesForWeek[1] = 100; //Monday
+            pricesForWeek[2] = 100; //Tuesday
+            pricesForWeek[3] = 90;  //Wednesday
+            pricesForWeek[4] = 80; //Thursday
+            pricesForWeek[5] = 120; //Friday
+            pricesForWeek[6] = 200; //Saturday
+            currentDay = 0; //represents day of the week
         }
 
         public Int32 getPrice() { return ticketPrice; }
@@ -38,15 +50,6 @@ namespace Project_2
 
         public void airlineFunc()
         {
-            pricesForWeek = new Int32[7];
-            pricesForWeek[0] = 180; //Sunday
-            pricesForWeek[1] = 100; //Monday
-            pricesForWeek[2] = 100; //Tuesday
-            pricesForWeek[3] = 90;  //Wednesday
-            pricesForWeek[4] = 80; //Thursday
-            pricesForWeek[5] = 120; //Friday
-            pricesForWeek[6] = 200; //Saturday
-            Int32 currentDay = 0; //represents day of the week
 
             while (numberOfPriceCuts <= 20)
             {
