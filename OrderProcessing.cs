@@ -32,6 +32,7 @@ namespace Project_2
                 double basePrice = order.getUnitPrice() * order.getAmount();
                 double amount = basePrice + (basePrice * 4.50) + 10;
                 //this.confirmation(amount);
+                Console.WriteLine("Valid card number.");
             }
         }
 

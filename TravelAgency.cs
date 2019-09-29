@@ -55,11 +55,10 @@ namespace Project_2
                 if(willOrder)
                 {
                     MyApplication.multiCellBufferPool.WaitOne();
-                    Thread.Sleep(1000);
                     placeOrder(salePrice);
                     //Console.WriteLine("{0} is ready for next pricecut", Thread.CurrentThread.Name);
                     willOrder = false;
-                    Thread.Sleep(1000);
+                    MyApplication.orderreceived.WaitOne();
                 }
                 //Console.WriteLine("{0} is waiting for a price cut to buy tickets", Thread.CurrentThread.Name);   
             }
@@ -87,14 +86,14 @@ namespace Project_2
             //generate a random number between 4000 and 8000 to simulate valid and invalid credit cards
             Int32 rand = rnd.Next(4000, 8000);
 
-           
+            Thread.Sleep(4000);
             tBuffer.setOneCell(amountOfTickets, rand, saleAirline, Thread.CurrentThread.Name, p);
-            Thread.Sleep(1000);
+            
             //emit an event when an order has been placed
             if (orderPlaced != null)
             {
+                
                 orderPlaced(saleAirline);
-                Thread.Sleep(1000);
             }
             //Console.WriteLine("{0} sent an order", this.travelAgencyID);
         }

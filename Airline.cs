@@ -106,6 +106,7 @@ namespace Project_2
                 {
                     processOrder();
                     willProcessOrder = false;
+                    MyApplication.orderreceived.Set();
                 }
                 else
                 {
@@ -119,7 +120,7 @@ namespace Project_2
                         currentDay++;
                     }
                     //sleep this thread for half a second to allow travel agency threads to start running
-                    Thread.Sleep(2000);
+                    Thread.Sleep(1000);
                     //calculate a new price using the pricing model 
                     Int32 newPrice = pricingModel(currentDay);
                     //call the private method to change the price
@@ -151,17 +152,16 @@ namespace Project_2
                 //Console.WriteLine("Order not intended for {0}", Thread.CurrentThread.Name);
                 return;
             }
-            /*
-            if (airlineName.CompareTo(order.getReceiverID()) != 0)
-            {
-                //Console.WriteLine("Order not intended for {0}", Thread.CurrentThread.Name);
-                return;
-            }
-            */
+           
             Console.WriteLine("{0} was able to fetch the order from {1} for price of {2}", this.airlineName, order.getSenderId(), order.getUnitPrice());
-
+            Order copyOfOrder = new Order();
+            copyOfOrder.setAmount(order.getAmount());
+            copyOfOrder.setCardNo(order.getCardNo());
+            copyOfOrder.setReceiverID(order.getReceiverID());
+            copyOfOrder.setSenderId(order.getSenderId());
+            copyOfOrder.setUnitPrice(order.getUnitPrice());
             //creating new order processing thread to process the order
-            OrderProcessing orderProcessing = new OrderProcessing(order);
+            OrderProcessing orderProcessing = new OrderProcessing(copyOfOrder);
             Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));
             newOrder.Start();
             //Console.WriteLine("{0} started to process order", this.airlineName);

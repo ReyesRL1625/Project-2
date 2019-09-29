@@ -22,8 +22,13 @@ namespace Project_2
         public static Semaphore multiCellBufferPool = new Semaphore(0, 3);
         public static Semaphore ConfirmationBufferPool = new Semaphore(0, 5);
 
+        public static AutoResetEvent orderreceived = new AutoResetEvent(false);
+
+
+
         static void Main(string[] args)
         {
+
             //create a multicell buffer, a confirmation buffer, and release three resources for the multicellbuffer
             buffer = new MultiCellBuffer();
             confirmBuffer = new ConfirmationBuffer();
@@ -42,6 +47,8 @@ namespace Project_2
             airline2T.Name = "Delta";
             airline1T.Start();
             airline2T.Start();
+            //airline1T.Join();
+            //airline2T.Join();
 
             //subscribing both airlines to the order placed event
             TravelAgency.orderPlaced += new orderPlacedDelegate(airline1.orderAvailable);
@@ -65,7 +72,10 @@ namespace Project_2
                 travelAgency[i] = new Thread(new ThreadStart(agency.travelAgencyFunc));
                 travelAgency[i].Name = "Travel Agency " + (i + 1).ToString();
                 travelAgency[i].Start();
+                //travelAgency[i].Join();
+
             }
+            
         }
     }
 }
