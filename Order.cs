@@ -12,6 +12,7 @@ namespace Project_2
         private string receiverID;//thread name of airline
         private Int32 amount; //number of tickets to order
         private double unitPrice; //price for the bulk of tickets received from airline
+        private Boolean isEmpty = true; //Whenever an order is made, it is automatically set as empty unless it is changed
 
         public string getSenderId()
         {
@@ -33,6 +34,10 @@ namespace Project_2
         {
             return unitPrice;
         }
+        public bool getIsEmpty()
+        {
+            return isEmpty;
+        }
         public void setSenderId(string newsenderid)
         {
             senderId = newsenderid;
@@ -53,7 +58,10 @@ namespace Project_2
         {
             unitPrice = newunitprice;
         }
-
+        public void setIsEmpty(bool notEmpty)
+        {
+            isEmpty = notEmpty;
+        }
 
     }
 }

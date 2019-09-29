@@ -50,7 +50,6 @@ namespace Project_2
 
         public void airlineFunc()
         {
-
             while (numberOfPriceCuts <= 20)
             {
                 if (currentDay == 6)
