@@ -69,7 +69,9 @@ namespace Project_2
                 order.setUnitPrice(p);
                 order.setIsEmpty(false);
                 order.setReceiverID(Thread.CurrentThread.Name);
+                MyApplication._pool.WaitOne();
                 tBuffer.setOneCell(order);
+                MyApplication._pool.Release();
                 Console.WriteLine("{0} is selling good priced tickets, it's thread id is {1}", Thread.CurrentThread.Name, Thread.CurrentThread.ManagedThreadId);
                 Console.WriteLine("{0} is ready to buy", this.travelAgencyID);
             }

@@ -64,8 +64,10 @@ namespace Project_2
                 Thread.Sleep(500);
                 Int32 newPrice = pricingModel(currentDay);
                 Airline.changePrice(newPrice);
+                MyApplication._pool.WaitOne();
                 //receiving order object from the multicell buffer
                 Order order = aBuffer.getOneCell();
+                MyApplication._pool.Release();
                 //creating new order processing thread to process the order
                 OrderProcessing orderProcessing = new OrderProcessing(order);
                 Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));

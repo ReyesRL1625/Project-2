@@ -14,6 +14,8 @@ namespace Project_2
         //constant number of travel agency threads running
         public const Int32 NumberOfTravelAgencies = 5;
 
+        public static Semaphore _pool = new Semaphore(3, 3);
+
         static void Main(string[] args)
         {
             //create a multicell buffer
