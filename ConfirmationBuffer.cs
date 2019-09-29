@@ -9,19 +9,20 @@ namespace Project_2
     {
         public int counter;
         public string buffer;
-        public static Semaphore _pool;
+        public static Semaphore multicellbuffer_pool;
+        
         ReaderWriterLock rwlock = new ReaderWriterLock();
 
         public ConfirmationBuffer()
         {
             counter = 1;
             buffer = "";
-            _pool = new Semaphore(1, 1);
+            multicellbuffer_pool = new Semaphore(1, 1);
         }
 
         public void setOneCell(string confirmation)
         {
-            _pool.WaitOne();
+            multicellbuffer_pool.WaitOne();
             rwlock.AcquireWriterLock(Timeout.Infinite);
             try
             {
@@ -33,7 +34,7 @@ namespace Project_2
                 //adds the confirmation to the buffer
                 buffer = confirmation;
                 counter--;
-                _pool.Release();
+                multicellbuffer_pool.Release();
             }
             finally
             {
@@ -45,7 +46,7 @@ namespace Project_2
 
         public string getOneCell()
         {
-            _pool.WaitOne();
+            multicellbuffer_pool.WaitOne();
             string result = "";
             rwlock.AcquireReaderLock(Timeout.Infinite);
             try
@@ -58,7 +59,7 @@ namespace Project_2
                 }
                 result = buffer;
                 counter++;
-                _pool.Release();
+                multicellbuffer_pool.Release();
             }
             finally
             {

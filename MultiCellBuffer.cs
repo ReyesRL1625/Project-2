@@ -7,13 +7,13 @@ namespace Project_2
 {
     class MultiCellBuffer
     {
-        //creates new variables
-        private Order order;
+        //array of order objects that will be of length 3
         private Order[] buffer;
-        //constructor
+
+        //multicellbuffer constructor
         public MultiCellBuffer()
         {
-            order = new Order();
+            //initialize array of order objects
             buffer = new Order[3];
             //fills the buffer with a new order at every index
             for(int i = 0; i < buffer.Length; i++)
@@ -21,9 +21,11 @@ namespace Project_2
                 buffer[i] = new Order();
             }
         }
+
         public void setOneCell(Order order)
         {
-            Console.WriteLine("Setting a cell in the buffer");
+            Console.WriteLine("Setting a cell in the buffer: {0} {1} {2} {3} {4}", order.getSenderId(), order.getReceiverID(), order.getAmount(), order.getUnitPrice(), order.getCardNo());
+
             //use the writer lock that won't time out
             lock(this)
             {
@@ -49,6 +51,7 @@ namespace Project_2
         public Order getOneCell()
         {
             Console.WriteLine("Getting the cell buffer");
+            Order order = new Order();
             //acquires lock
             lock(this)
             {
@@ -62,6 +65,7 @@ namespace Project_2
                         Console.WriteLine("Getting the order at index {0}", i);
                         //gets the order at that index
                         order = buffer[i];
+                        
                         //adds a new order to the buffer at that index
                         buffer[i] = new Order();
                         //breaks from the loop

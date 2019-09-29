@@ -37,44 +37,42 @@ namespace Project_2
         //method that will be running as a thread
         public void travelAgencyFunc()
         {   
-            //create an airline object
-            Airline airline = new Airline(tBuffer, tConfirmBuffer);
-            while (ticketsBought < ticketsNeeded)
+            //the thread will keep running until the airline threads terminate
+            while (MyApplication.airline1T.IsAlive || MyApplication.airline2T.IsAlive)
             {
-                Thread.Sleep(1000);
-                Int32 p = airline.getPrice();
-                //buy tickets
-                //create an order
-                Console.WriteLine("{0} has everyday low price: ${1} each", Thread.CurrentThread.Name, p);
-                //Console.WriteLine("Travel agency {0} has bought {0} tickets", Thread.CurrentThread.Name, ticketsBought);
-                
+                Thread.Sleep(500);
+                Console.WriteLine("{0} is waiting for a price cut to buy tickets", Thread.CurrentThread.Name);   
             }
+            Console.WriteLine("{0} terminating", Thread.CurrentThread.Name);
         }
         public void ticketsOnSale(Int32 p)
         {
+            //create a new order object
             Order order = new Order();
-            lock (order)
+            lock(order)
+            //if the price that was passed in is less than 100, purchase a bulk of 20, otherwise purchase 10
+            if(p < 100)
             {
-                ticketsBought++;
-                if(p < 100)
-                {
-                    order.setAmount(20);
-                }
-                else
-                {
-                    order.setAmount(10);
-                }
-                Int32 rand = rnd.Next(4000, 8000);
-                order.setCardNo(rand);
-                order.setUnitPrice(p);
-                order.setIsEmpty(false);
-                order.setReceiverID(Thread.CurrentThread.Name);
-                MyApplication._pool.WaitOne();
-                tBuffer.setOneCell(order);
-                MyApplication._pool.Release();
-                Console.WriteLine("{0} is selling good priced tickets, it's thread id is {1}", Thread.CurrentThread.Name, Thread.CurrentThread.ManagedThreadId);
-                Console.WriteLine("{0} is ready to buy", this.travelAgencyID);
+                order.setAmount(20);
             }
+            else
+            {
+                order.setAmount(10);
+            }
+
+            //generate a random number between 4000 and 8000 to simulate valid and invalid credit cards
+            Int32 rand = rnd.Next(4000, 8000);
+
+            //set the order attributes
+            order.setCardNo(rand);
+            order.setUnitPrice(p);
+            order.setSenderId(this.travelAgencyID.ToString());
+            order.setReceiverID(Thread.CurrentThread.Name);
+            MyApplication.multiCellBufferPool.WaitOne();
+            tBuffer.setOneCell(order);
+            MyApplication.multiCellBufferPool.Release();
+            //Console.WriteLine("{0} is selling good priced tickets, it's thread id is {1}", Thread.CurrentThread.Name, Thread.CurrentThread.ManagedThreadId);
+            Console.WriteLine("{0} sent an order", this.travelAgencyID);
         }
 
     }

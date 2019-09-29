@@ -5,20 +5,34 @@ using System.Threading;
 
 namespace Project_2
 {
-    public delegate void priceCutEvent(Int32 p);
+    //declaring a delegate container for the PriceCutEventMethod signature
+    public delegate void priceCutDelegate(Int32 p);
 
     class Airline
     {
-        //define a price cut event named 
-        public static event priceCutEvent priceCut;
-        public Int32[] pricesForWeek;
+        //define a price cut event named priceCut
+        public static event priceCutDelegate priceCut;
+
+        //arrray of integers used to simulate prices for different days of the week
+        private Int32[] pricesForWeek;
+
+        //current ticket price for each airline
         private static Int32 ticketPrice;
-        public Int32 availableTickets = 500;
-        public static Int32 numberOfPriceCuts = 0;
+
+        //current number of available tickets
+        private static Int32 availableTickets;
+
+        //total number of priceCuts so far
+        public static Int32 numberOfPriceCuts;
+
+        //multicell buffer and confirmation buffer for the orders
         MultiCellBuffer aBuffer;
         ConfirmationBuffer aConfirmBuffer;
+
+        //integer that represents the current day of the week in the range of 0 to 6
         private Int32 currentDay;
 
+        //airline constructor with two buffers
         public Airline(MultiCellBuffer newBuffer, ConfirmationBuffer newCBufffer)
         {
             aBuffer = newBuffer;
@@ -33,25 +47,52 @@ namespace Project_2
             pricesForWeek[5] = 120; //Friday
             pricesForWeek[6] = 200; //Saturday
             currentDay = 0; //represents day of the week
+            availableTickets = 500;
+            numberOfPriceCuts = 0;
         }
 
-        public Int32 getPrice() { return ticketPrice; }
-        public static void changePrice(Int32 price)
+        //getter for ticket price
+        public Int32 getPrice()
         {
+            return ticketPrice;
+        }
+
+        //getter for available tickets
+        public Int32 getAvailableTickets()
+        {
+            return availableTickets;
+        }
+
+        //setter for available tickets
+        public void setAvailableTickets(Int32 newNoAvailableTickets)
+        {
+            availableTickets = newNoAvailableTickets;
+        }
+
+        //change price method that is private to each airline object
+        private void changePrice(Int32 price)
+        {
+            //if price is lower than previous time, emmit a price cut event after checking that there is at least one subscribed
             if (price < ticketPrice)
+            {
+                //verify there is at least a subscriber
                 if (priceCut != null)
                 {
+                    //emit a price cut event to notify the subcribed 
                     priceCut(price);
-                    //increment counter
                     numberOfPriceCuts++;
+                    Console.WriteLine("{0} had a price cut", Thread.CurrentThread.Name);
                 }
+            }
             ticketPrice = price;
         }
 
         public void airlineFunc()
         {
-            while (numberOfPriceCuts <= 20)
+            //keep the airline thread running until 5 price cuts have passed
+            while (numberOfPriceCuts <= 5)
             {
+                //if current day is the last index, reset it to 0, otherwise increment the current day index
                 if (currentDay == 6)
                 {
                     currentDay = 0;
@@ -61,18 +102,29 @@ namespace Project_2
                     currentDay++;
                 }
 
+                //sleep this thread for half a second to allow travel agency threads to start running
                 Thread.Sleep(500);
+                
+                //calculate a new price using the pricing model 
                 Int32 newPrice = pricingModel(currentDay);
-                Airline.changePrice(newPrice);
-                MyApplication._pool.WaitOne();
+
+                //call the private method to change the price
+                changePrice(newPrice);
+
+                //
+                MyApplication.multiCellBufferPool.WaitOne();
+                Console.WriteLine("{0} has price of ${1}", Thread.CurrentThread.Name, ticketPrice);
+
                 //receiving order object from the multicell buffer
                 Order order = aBuffer.getOneCell();
-                MyApplication._pool.Release();
+                MyApplication.multiCellBufferPool.Release();
+
                 //creating new order processing thread to process the order
                 OrderProcessing orderProcessing = new OrderProcessing(order);
                 Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));
                 newOrder.Start();
             }
+            Console.WriteLine("{0} Thread ended", Thread.CurrentThread.Name);
         }
 
         public Int32 pricingModel(Int32 currentDay)
