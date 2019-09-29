@@ -36,6 +36,7 @@ namespace Project_2
         private string airlineName;
 
         private bool willProcessOrder;
+        private string orderAirlineName;
 
         //airline constructor with two buffers
         public Airline(MultiCellBuffer newBuffer, ConfirmationBuffer newCBufffer, string newAirlineName)
@@ -44,6 +45,7 @@ namespace Project_2
             aConfirmBuffer = newCBufffer;
             airlineName = newAirlineName;
             willProcessOrder = false;
+            orderAirlineName = "";
             ticketPrice = 100;
             pricesForWeek = new Int32[7];
             pricesForWeek[0] = 180; //Sunday
@@ -88,7 +90,7 @@ namespace Project_2
                     //emit a price cut event to notify the subcribed 
                     priceCut(price);
                     numberOfPriceCuts++;
-                    Console.WriteLine("{0} had a price cut", Thread.CurrentThread.Name);
+                    //Console.WriteLine("{0} had a price cut", Thread.CurrentThread.Name);
                 }
             }
             ticketPrice = price;
@@ -103,7 +105,7 @@ namespace Project_2
                 if (willProcessOrder)
                 {
                     processOrder();
-                    Thread.Sleep(1000);
+                    willProcessOrder = false;
                 }
                 else
                 {
@@ -117,12 +119,13 @@ namespace Project_2
                         currentDay++;
                     }
                     //sleep this thread for half a second to allow travel agency threads to start running
-                    Thread.Sleep(500);
+                    Thread.Sleep(2000);
                     //calculate a new price using the pricing model 
                     Int32 newPrice = pricingModel(currentDay);
                     //call the private method to change the price
                     changePrice(newPrice);
                     Console.WriteLine("{0} has price of ${1}", Thread.CurrentThread.Name, ticketPrice);
+                    Thread.Sleep(1000);
                 }
                
             }
@@ -134,25 +137,36 @@ namespace Project_2
             Int32 p = pricesForWeek[currentDay];
             return p;
         }
-        public void orderAvailable()
+        public void orderAvailable(string newOrderAirlineName)
         {
             willProcessOrder = true;
+            orderAirlineName = newOrderAirlineName;
         }
         public void processOrder()
         {
             //receiving order object from the multicell buffer
             Order order = aBuffer.getOneCell();
-            MyApplication.multiCellBufferPool.Release();
-            Console.WriteLine("{0} was able to fetch the order", this.airlineName);
-
-            if (order != null)
+            if (order == null)
             {
-                //creating new order processing thread to process the order
-                OrderProcessing orderProcessing = new OrderProcessing(order);
-                Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));
-                newOrder.Start();
+                //Console.WriteLine("Order not intended for {0}", Thread.CurrentThread.Name);
+                return;
             }
-            Console.WriteLine("{0} started to process order", this.airlineName);
+            /*
+            if (airlineName.CompareTo(order.getReceiverID()) != 0)
+            {
+                //Console.WriteLine("Order not intended for {0}", Thread.CurrentThread.Name);
+                return;
+            }
+            */
+            Console.WriteLine("{0} was able to fetch the order from {1} for price of {2}", this.airlineName, order.getSenderId(), order.getUnitPrice());
+
+            //creating new order processing thread to process the order
+            OrderProcessing orderProcessing = new OrderProcessing(order);
+            Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));
+            newOrder.Start();
+            //Console.WriteLine("{0} started to process order", this.airlineName);
+            MyApplication.multiCellBufferPool.Release();
+
         }
     }
 }

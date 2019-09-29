@@ -6,7 +6,7 @@ using System.Threading;
 namespace Project_2
 {
     //declaring a delegate container for the orderPladcedDelegate signature
-    public delegate void orderPlacedDelegate();
+    public delegate void orderPlacedDelegate(string orderAirlineName);
     class TravelAgency
     {
         //define an order placed event named orderPlaced
@@ -54,8 +54,12 @@ namespace Project_2
                 Thread.Sleep(500);
                 if(willOrder)
                 {
+                    MyApplication.multiCellBufferPool.WaitOne();
+                    Thread.Sleep(1000);
                     placeOrder(salePrice);
+                    //Console.WriteLine("{0} is ready for next pricecut", Thread.CurrentThread.Name);
                     willOrder = false;
+                    Thread.Sleep(1000);
                 }
                 //Console.WriteLine("{0} is waiting for a price cut to buy tickets", Thread.CurrentThread.Name);   
             }
@@ -69,34 +73,28 @@ namespace Project_2
         }
         public void placeOrder(Int32 p)
         {
-            //create a new order object
-            Order order = new Order();
-
+            Int32 amountOfTickets = 0;
             //if the price that was passed in is less than 100, purchase a bulk of 20, otherwise purchase 10
             if (p < 100)
             {
-                order.setAmount(20);
+                amountOfTickets = 20;
             }
             else
             {
-                order.setAmount(10);
+                amountOfTickets = 10;
             }
 
             //generate a random number between 4000 and 8000 to simulate valid and invalid credit cards
             Int32 rand = rnd.Next(4000, 8000);
 
-            //set the order attributes
-            order.setCardNo(rand);
-            order.setUnitPrice(p);
-            order.setSenderId(this.travelAgencyID.ToString());
-            order.setReceiverID(saleAirline);
-            MyApplication.multiCellBufferPool.WaitOne();
-            tBuffer.setOneCell(order);
-
+           
+            tBuffer.setOneCell(amountOfTickets, rand, saleAirline, Thread.CurrentThread.Name, p);
+            Thread.Sleep(1000);
             //emit an event when an order has been placed
             if (orderPlaced != null)
             {
-                orderPlaced();
+                orderPlaced(saleAirline);
+                Thread.Sleep(1000);
             }
             //Console.WriteLine("{0} sent an order", this.travelAgencyID);
         }
