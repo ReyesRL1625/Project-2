@@ -5,8 +5,13 @@ using System.Threading;
 
 namespace Project_2
 {
+    //declaring a delegate container for the orderPladcedDelegate signature
+    public delegate void orderPlacedDelegate();
     class TravelAgency
     {
+        //define an order placed event named orderPlaced
+        public static event orderPlacedDelegate orderPlaced;
+
         //total number of tickets that will be needed by each travel agency thread
         private const Int32 ticketsNeeded = 200;
 
@@ -41,7 +46,7 @@ namespace Project_2
             while (MyApplication.airline1T.IsAlive || MyApplication.airline2T.IsAlive)
             {
                 Thread.Sleep(500);
-                Console.WriteLine("{0} is waiting for a price cut to buy tickets", Thread.CurrentThread.Name);   
+                //Console.WriteLine("{0} is waiting for a price cut to buy tickets", Thread.CurrentThread.Name);   
             }
             Console.WriteLine("{0} terminating", Thread.CurrentThread.Name);
         }
@@ -70,9 +75,13 @@ namespace Project_2
             order.setReceiverID(Thread.CurrentThread.Name);
             MyApplication.multiCellBufferPool.WaitOne();
             tBuffer.setOneCell(order);
-            MyApplication.multiCellBufferPool.Release();
-            //Console.WriteLine("{0} is selling good priced tickets, it's thread id is {1}", Thread.CurrentThread.Name, Thread.CurrentThread.ManagedThreadId);
-            Console.WriteLine("{0} sent an order", this.travelAgencyID);
+
+            //emit an event when an order has been placed
+            if(orderPlaced != null)
+            {
+                orderPlaced();
+            }
+            //Console.WriteLine("{0} sent an order", this.travelAgencyID);
         }
 
     }

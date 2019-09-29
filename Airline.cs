@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Project_2
 {
-    //declaring a delegate container for the PriceCutEventMethod signature
+    //declaring a delegate container for the priceCutDelegate signature
     public delegate void priceCutDelegate(Int32 p);
 
     class Airline
@@ -32,11 +32,15 @@ namespace Project_2
         //integer that represents the current day of the week in the range of 0 to 6
         private Int32 currentDay;
 
+        //airline id
+        private string airlineName;
+
         //airline constructor with two buffers
-        public Airline(MultiCellBuffer newBuffer, ConfirmationBuffer newCBufffer)
+        public Airline(MultiCellBuffer newBuffer, ConfirmationBuffer newCBufffer, string newAirlineName)
         {
             aBuffer = newBuffer;
             aConfirmBuffer = newCBufffer;
+            airlineName = newAirlineName;
             ticketPrice = 100;
             pricesForWeek = new Int32[7];
             pricesForWeek[0] = 180; //Sunday
@@ -111,18 +115,7 @@ namespace Project_2
                 //call the private method to change the price
                 changePrice(newPrice);
 
-                //
-                MyApplication.multiCellBufferPool.WaitOne();
                 Console.WriteLine("{0} has price of ${1}", Thread.CurrentThread.Name, ticketPrice);
-
-                //receiving order object from the multicell buffer
-                Order order = aBuffer.getOneCell();
-                MyApplication.multiCellBufferPool.Release();
-
-                //creating new order processing thread to process the order
-                OrderProcessing orderProcessing = new OrderProcessing(order);
-                Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));
-                newOrder.Start();
             }
             Console.WriteLine("{0} Thread ended", Thread.CurrentThread.Name);
         }
@@ -131,6 +124,22 @@ namespace Project_2
         {
             Int32 p = pricesForWeek[currentDay];
             return p;
+        }
+        public void orderAvailable()
+        {
+            //receiving order object from the multicell buffer
+            Order order = aBuffer.getOneCell();
+            MyApplication.multiCellBufferPool.Release();
+            Console.WriteLine("{0} was able to fetch the order", this.airlineName);
+
+            if(order != null)
+            {
+                //creating new order processing thread to process the order
+                OrderProcessing orderProcessing = new OrderProcessing(order);
+                Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));
+                newOrder.Start();       
+            }
+            Console.WriteLine("{0} started to process order", this.airlineName);
         }
     }
 }

@@ -20,6 +20,7 @@ namespace Project_2
 
         //initialize a semaphore with no resources available, they will get realeased after the buffer is created
         public static Semaphore multiCellBufferPool = new Semaphore(0, 3);
+        public static Semaphore ConfirmationBufferPool = new Semaphore(0, 5);
 
         static void Main(string[] args)
         {
@@ -27,19 +28,24 @@ namespace Project_2
             buffer = new MultiCellBuffer();
             confirmBuffer = new ConfirmationBuffer();
             multiCellBufferPool.Release(3);
+            ConfirmationBufferPool.Release(5);
 
 
             //create two airline objects and pass in the same multicellbuffer to be shared for receiving orders
-            Airline airline1 = new Airline(buffer, confirmBuffer);
-            Airline airline2 = new Airline(buffer, confirmBuffer);
+            Airline airline1 = new Airline(buffer, confirmBuffer, "Southwest");
+            Airline airline2 = new Airline(buffer, confirmBuffer, "Delta");
 
             //create two airline threads, name them, and start their airlinefunc running as a thread
             airline1T = new Thread(new ThreadStart(airline1.airlineFunc));
             airline2T = new Thread(new ThreadStart(airline2.airlineFunc));
-            airline1T.Name = "Airline1";
-            airline2T.Name = "Airline2";
+            airline1T.Name = "Southwest";
+            airline2T.Name = "Delta";
             airline1T.Start();
             airline2T.Start();
+
+            //subscribing both airlines to the order placed event
+            TravelAgency.orderPlaced += new orderPlacedDelegate(airline1.orderAvailable);
+            TravelAgency.orderPlaced += new orderPlacedDelegate(airline2.orderAvailable);
 
             //this array will be used to store travel agency threads
             Thread[] travelAgency = new Thread[5];
@@ -59,7 +65,6 @@ namespace Project_2
                 travelAgency[i] = new Thread(new ThreadStart(agency.travelAgencyFunc));
                 travelAgency[i].Name = "Travel Agency " + (i + 1).ToString();
                 travelAgency[i].Start();
-                Console.WriteLine("{0} started", travelAgency[i].Name);
             }
         }
     }
