@@ -23,7 +23,7 @@ namespace Project_2
             if (!(order.getCardNo() >= 5000) && !(order.getCardNo() <= 7000))
             {
                 //invalid card
-                Console.WriteLine("Invalid card number.");
+                Console.WriteLine("Order failed due to invalid card number: {0}", order.getCardNo());
             }
             else
             {
@@ -33,14 +33,9 @@ namespace Project_2
                 double amount = basePrice + (basePrice * 4.50) + 10;
                 //this.confirmation(amount);
                 Console.WriteLine("Valid card number.");
-                Console.WriteLine("[{0}]   {1} has successfully purchased {2} tickets from {3} for ${4}", order.getTimestamp(), order.getSenderId(), 
+                Console.WriteLine("[{0}]: {1} has successfully purchased {2} tickets from {3} for ${4}", order.getTimestamp(), order.getSenderId(), 
                     order.getAmount(), order.getReceiverID(), amount);
             }
-        }
-
-        public void confirmation(double amount)
-        {
-
         }
     }
 }
