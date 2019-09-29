@@ -13,8 +13,6 @@ namespace Project_2
         private Order[] buffer;
         private static Semaphore _pool;
         Random rnd = new Random();
-        //creates the read write lock
-        ReaderWriterLock rwlock = new ReaderWriterLock();
         //constructor
         public MultiCellBuffer()
         {
@@ -37,7 +35,7 @@ namespace Project_2
             lock(buffer)
             {
                 //while there is no room in the buffer
-                while (counter == 3)
+                if (counter == 3)
                 {
                     //Makes the operation wait until a pulse signal
                     Monitor.Wait(this);
@@ -58,8 +56,6 @@ namespace Project_2
                 }
                 //release the _pool
                 _pool.Release();
-                //releases the writer lock
-                rwlock.ReleaseWriterLock();
                 //sends the pulse signal back to anything waiting
                 Monitor.Pulse(this);
             }
@@ -74,11 +70,11 @@ namespace Project_2
             lock(buffer)
             {
                 //while there are no orders available
-                while (counter == 0)
+                if (counter == 0)
                 {
                     //wait to continue until there is a pulse 
                     //this signals that there is room in the counter
-                    Monitor.Wait(this);
+                    Monitor.Wait(buffer);
                 }
                 //loop that does not stop until the order has been added to the buffer
                 while(true)
@@ -98,10 +94,8 @@ namespace Project_2
                 }
                 //releases the semaphore
                 _pool.Release();
-                //releases the reader lock
-                rwlock.ReleaseReaderLock();
                 //sends a pulse signal
-                Monitor.Pulse(this);
+                Monitor.Pulse(buffer);
             }
             //returns the order
             return order;
