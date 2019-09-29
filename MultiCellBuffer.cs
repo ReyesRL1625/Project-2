@@ -40,7 +40,7 @@ namespace Project_2
             Console.WriteLine("Order sent by {0} to {1}", order.getSenderId(), order.getReceiverID());
 
             //attempt to use cell 1, if not available, move to cell 2
-            if (Monitor.TryEnter(buffer[0]) && Cell1Writeable)
+            if (Monitor.TryEnter(buffer[0]))
             {
                 try
                 {
@@ -60,7 +60,7 @@ namespace Project_2
                 
                 
             }
-            else if (Monitor.TryEnter(buffer[1]) && Cell2Writeable)
+            else if (Monitor.TryEnter(buffer[1]))
             {
                 try
                 {
@@ -84,17 +84,14 @@ namespace Project_2
                 Monitor.Enter(buffer[2]);
                 try
                 {
-                    if (Cell3Writeable)
-                    {
-                        Console.WriteLine("Adding to the buffer at index 2");
-                        //adds the order passed to the buffer
-                        buffer[2].setAmount(order.getAmount());
-                        buffer[2].setCardNo(order.getCardNo());
-                        buffer[2].setReceiverID(order.getReceiverID());
-                        buffer[2].setSenderId(order.getSenderId());
-                        buffer[2].setUnitPrice(order.getUnitPrice());
-                        Cell3Writeable = false;
-                    }
+                    Console.WriteLine("Adding to the buffer at index 2");
+                    //adds the order passed to the buffer
+                    buffer[2].setAmount(order.getAmount());
+                    buffer[2].setCardNo(order.getCardNo());
+                    buffer[2].setReceiverID(order.getReceiverID());
+                    buffer[2].setSenderId(order.getSenderId());
+                    buffer[2].setUnitPrice(order.getUnitPrice());
+                    Cell3Writeable = false;
                 }
                 finally
                 {

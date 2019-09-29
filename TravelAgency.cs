@@ -30,6 +30,10 @@ namespace Project_2
         //ID used to differentiate different travel agency threads
         private Int32 travelAgencyID;
 
+        private bool willOrder;
+        private Int32 salePrice;
+        private string saleAirline;
+
         //constructor for travel agency with two buffers and the travel agency ID
         public TravelAgency(MultiCellBuffer newMBuffer, ConfirmationBuffer newCBuffer, Int32 newTravelAgencyID)
         {
@@ -37,6 +41,8 @@ namespace Project_2
             tConfirmBuffer = newCBuffer;
             ticketsBought = 0;
             travelAgencyID = newTravelAgencyID;
+            willOrder = false;
+            salePrice = 0;
         }
 
         //method that will be running as a thread
@@ -46,17 +52,28 @@ namespace Project_2
             while (MyApplication.airline1T.IsAlive || MyApplication.airline2T.IsAlive)
             {
                 Thread.Sleep(500);
+                if(willOrder)
+                {
+                    placeOrder(salePrice);
+                    willOrder = false;
+                }
                 //Console.WriteLine("{0} is waiting for a price cut to buy tickets", Thread.CurrentThread.Name);   
             }
             Console.WriteLine("{0} terminating", Thread.CurrentThread.Name);
         }
         public void ticketsOnSale(Int32 p)
         {
+            willOrder = true;
+            salePrice = p;
+            saleAirline = Thread.CurrentThread.Name;
+        }
+        public void placeOrder(Int32 p)
+        {
             //create a new order object
             Order order = new Order();
-            lock(order)
+
             //if the price that was passed in is less than 100, purchase a bulk of 20, otherwise purchase 10
-            if(p < 100)
+            if (p < 100)
             {
                 order.setAmount(20);
             }
@@ -72,12 +89,12 @@ namespace Project_2
             order.setCardNo(rand);
             order.setUnitPrice(p);
             order.setSenderId(this.travelAgencyID.ToString());
-            order.setReceiverID(Thread.CurrentThread.Name);
+            order.setReceiverID(saleAirline);
             MyApplication.multiCellBufferPool.WaitOne();
             tBuffer.setOneCell(order);
 
             //emit an event when an order has been placed
-            if(orderPlaced != null)
+            if (orderPlaced != null)
             {
                 orderPlaced();
             }

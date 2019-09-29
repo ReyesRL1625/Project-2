@@ -35,12 +35,15 @@ namespace Project_2
         //airline id
         private string airlineName;
 
+        private bool willProcessOrder;
+
         //airline constructor with two buffers
         public Airline(MultiCellBuffer newBuffer, ConfirmationBuffer newCBufffer, string newAirlineName)
         {
             aBuffer = newBuffer;
             aConfirmBuffer = newCBufffer;
             airlineName = newAirlineName;
+            willProcessOrder = false;
             ticketPrice = 100;
             pricesForWeek = new Int32[7];
             pricesForWeek[0] = 180; //Sunday
@@ -96,26 +99,32 @@ namespace Project_2
             //keep the airline thread running until 5 price cuts have passed
             while (numberOfPriceCuts <= 5)
             {
-                //if current day is the last index, reset it to 0, otherwise increment the current day index
-                if (currentDay == 6)
+
+                if (willProcessOrder)
                 {
-                    currentDay = 0;
+                    processOrder();
+                    Thread.Sleep(1000);
                 }
                 else
                 {
-                    currentDay++;
+                    //if current day is the last index, reset it to 0, otherwise increment the current day index
+                    if (currentDay == 6)
+                    {
+                        currentDay = 0;
+                    }
+                    else
+                    {
+                        currentDay++;
+                    }
+                    //sleep this thread for half a second to allow travel agency threads to start running
+                    Thread.Sleep(500);
+                    //calculate a new price using the pricing model 
+                    Int32 newPrice = pricingModel(currentDay);
+                    //call the private method to change the price
+                    changePrice(newPrice);
+                    Console.WriteLine("{0} has price of ${1}", Thread.CurrentThread.Name, ticketPrice);
                 }
-
-                //sleep this thread for half a second to allow travel agency threads to start running
-                Thread.Sleep(500);
-                
-                //calculate a new price using the pricing model 
-                Int32 newPrice = pricingModel(currentDay);
-
-                //call the private method to change the price
-                changePrice(newPrice);
-
-                Console.WriteLine("{0} has price of ${1}", Thread.CurrentThread.Name, ticketPrice);
+               
             }
             Console.WriteLine("{0} Thread ended", Thread.CurrentThread.Name);
         }
@@ -127,17 +136,21 @@ namespace Project_2
         }
         public void orderAvailable()
         {
+            willProcessOrder = true;
+        }
+        public void processOrder()
+        {
             //receiving order object from the multicell buffer
             Order order = aBuffer.getOneCell();
             MyApplication.multiCellBufferPool.Release();
             Console.WriteLine("{0} was able to fetch the order", this.airlineName);
 
-            if(order != null)
+            if (order != null)
             {
                 //creating new order processing thread to process the order
                 OrderProcessing orderProcessing = new OrderProcessing(order);
                 Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));
-                newOrder.Start();       
+                newOrder.Start();
             }
             Console.WriteLine("{0} started to process order", this.airlineName);
         }
