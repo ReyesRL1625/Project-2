@@ -152,8 +152,9 @@ namespace Project_2
                 //Console.WriteLine("Order not intended for {0}", Thread.CurrentThread.Name);
                 return;
             }
-           
-            Console.WriteLine("{0} was able to fetch the order from {1} for price of {2}", this.airlineName, order.getSenderId(), order.getUnitPrice());
+
+            //Console.WriteLine("{0} was able to fetch the order from {1} for price of {2}", this.airlineName, order.getSenderId(), order.getUnitPrice());
+            /*
             Order copyOfOrder = new Order();
             copyOfOrder.setAmount(order.getAmount());
             copyOfOrder.setCardNo(order.getCardNo());
@@ -161,8 +162,9 @@ namespace Project_2
             copyOfOrder.setSenderId(order.getSenderId());
             copyOfOrder.setUnitPrice(order.getUnitPrice());
             copyOfOrder.setTimeStamp(order.getTimestamp());
+            */        
             //creating new order processing thread to process the order
-            OrderProcessing orderProcessing = new OrderProcessing(copyOfOrder);
+            OrderProcessing orderProcessing = new OrderProcessing(order);
             Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));
             newOrder.Start();
             //Console.WriteLine("{0} started to process order", this.airlineName);

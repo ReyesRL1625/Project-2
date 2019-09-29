@@ -133,6 +133,7 @@ namespace Project_2
 
         public Order getOneCell()
         {
+            Order temp = null;
             if (!Cell1Writeable)
             {
                 //if order is not corresponding to the thread trying to get the order, don't let it get a cell 
@@ -145,11 +146,13 @@ namespace Project_2
                 {
                    // Console.WriteLine("Getting a cell at index 0");
                     Cell1Writeable = true;
-                    return buffer[0];
+                    temp = buffer[0];
+                    buffer[0] = new Order();
+                    return temp;
                 }
                 finally
                 {
-                    Monitor.Exit(buffer[0]);
+                    Monitor.Exit(temp);
                 }
             }
             else if (!Cell2Writeable)
@@ -164,11 +167,13 @@ namespace Project_2
                 {
                     //Console.WriteLine("Getting a cell at index 1");
                     Cell2Writeable = true;
-                    return buffer[1];
+                    temp = buffer[1];
+                    buffer[1] = new Order();
+                    return temp;
                 }
                 finally
                 {
-                    Monitor.Exit(buffer[1]);
+                    Monitor.Exit(temp);
                 }
             }
 
@@ -185,11 +190,13 @@ namespace Project_2
                 {
                     //Console.WriteLine("Getting a cell at index 2");
                     Cell3Writeable = true;
-                    return buffer[2];
+                    temp = buffer[2];
+                    buffer[2] = new Order();
+                    return temp;
                 }
                 finally
                 {
-                    Monitor.Exit(buffer[2]);
+                    Monitor.Exit(temp);
                 }
             }
         }
