@@ -85,9 +85,11 @@ namespace Project_2
 
             //generate a random number between 4000 and 8000 to simulate valid and invalid credit cards
             Int32 rand = rnd.Next(4000, 8000);
+            //Gets the time stamp
+            string timeStamp = getTimestamp();
 
             Thread.Sleep(4000);
-            tBuffer.setOneCell(amountOfTickets, rand, saleAirline, Thread.CurrentThread.Name, p);
+            tBuffer.setOneCell(amountOfTickets, rand, saleAirline, Thread.CurrentThread.Name, p, timeStamp);
             
             //emit an event when an order has been placed
             if (orderPlaced != null)
@@ -96,6 +98,12 @@ namespace Project_2
                 orderPlaced(saleAirline);
             }
             //Console.WriteLine("{0} sent an order", this.travelAgencyID);
+        }
+
+        //method in charge of getting the time stamp
+        public string getTimestamp()
+        {
+            return string.Format("{0:yyyy-MM-dd  hh:mm:ss}", DateTime.Now);
         }
 
     }

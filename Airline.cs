@@ -160,6 +160,7 @@ namespace Project_2
             copyOfOrder.setReceiverID(order.getReceiverID());
             copyOfOrder.setSenderId(order.getSenderId());
             copyOfOrder.setUnitPrice(order.getUnitPrice());
+            copyOfOrder.setTimeStamp(order.getTimestamp());
             //creating new order processing thread to process the order
             OrderProcessing orderProcessing = new OrderProcessing(copyOfOrder);
             Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));

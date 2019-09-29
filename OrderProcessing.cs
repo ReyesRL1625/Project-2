@@ -33,6 +33,8 @@ namespace Project_2
                 double amount = basePrice + (basePrice * 4.50) + 10;
                 //this.confirmation(amount);
                 Console.WriteLine("Valid card number.");
+                Console.WriteLine("[{0}]   {1} has successfully purchased {2} tickets from {3} for ${4}", order.getTimestamp(), order.getSenderId(), 
+                    order.getAmount(), order.getReceiverID(), amount);
             }
         }
 

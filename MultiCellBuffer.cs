@@ -37,7 +37,7 @@ namespace Project_2
             }
         }
 
-        public void setOneCell(Int32 newAmount, Int32 newCardNo, string newReceiverId, string newSenderId, Int32 newUnitPrice)
+        public void setOneCell(Int32 newAmount, Int32 newCardNo, string newReceiverId, string newSenderId, Int32 newUnitPrice, string timestamp)
         {
             //enter the set one cell method
             Console.WriteLine("Order sent by {0} to {1} for the price of {2}", newSenderId, newReceiverId, newUnitPrice);
@@ -54,6 +54,7 @@ namespace Project_2
                     buffer[0].setReceiverID(newReceiverId);
                     buffer[0].setSenderId(newSenderId);
                     buffer[0].setUnitPrice(newUnitPrice);
+                    buffer[0].setTimeStamp(timestamp);
                     if(newReceiverId.CompareTo("Southwest") == 0)
                     {
                         Cell1ForSouthwest = true;
@@ -82,6 +83,7 @@ namespace Project_2
                     buffer[1].setReceiverID(newReceiverId);
                     buffer[1].setSenderId(newSenderId);
                     buffer[1].setUnitPrice(newUnitPrice);
+                    buffer[1].setTimeStamp(timestamp);
                     if (newReceiverId.CompareTo("Southwest") == 0)
                     {
                         Cell2ForSouthwest = true;
@@ -110,6 +112,7 @@ namespace Project_2
                     buffer[2].setReceiverID(newReceiverId);
                     buffer[2].setSenderId(newSenderId);
                     buffer[2].setUnitPrice(newUnitPrice);
+                    buffer[2].setTimeStamp(timestamp);
                     if (newReceiverId.CompareTo("Southwest") == 0)
                     {
                         Cell3ForSouthwest = true;
@@ -124,7 +127,6 @@ namespace Project_2
                 {
                     Monitor.Exit(buffer[2]);
                 }
-            
             }
             
         }
