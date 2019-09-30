@@ -42,7 +42,7 @@ namespace Project_2
             airlineName = newAirlineName;
             willProcessOrder = false;
             orderAirlineName = "";
-            ticketPrice = 100;
+            ticketPrice = 80;
             pricesForWeek = new Int32[7];
             pricesForWeek[0] = 180; //Sunday
             pricesForWeek[1] = 100; //Monday
@@ -95,7 +95,7 @@ namespace Project_2
         public void airlineFunc()
         {
             //keep the airline thread running until 20 price cuts have passed
-            while (numberOfPriceCuts <= 20)
+            while (numberOfPriceCuts <= 5)
             {
 
                 if (willProcessOrder)
@@ -125,12 +125,19 @@ namespace Project_2
                 }
                
             }
+
             Console.WriteLine("{0} Thread ended", Thread.CurrentThread.Name);
+
         }
 
+        //if available tickets are greater than 100, do a discount of $20
         public Int32 pricingModel(Int32 currentDay)
         {
             Int32 p = pricesForWeek[currentDay];
+            if(availableTickets > 100)
+            {
+                p -= 20;
+            }
             return p;
         }
         public void orderAvailable(string newOrderAirlineName)

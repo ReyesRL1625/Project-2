@@ -11,7 +11,7 @@ namespace Project_2
         public static event orderPlacedDelegate orderPlaced;
 
         //total number of tickets that will be needed by each travel agency thread
-        private const Int32 ticketsNeeded = 200;
+        private const Int32 ticketsNeeded = 100;
 
         //current number of tickets bought
         private Int32 ticketsBought;
@@ -55,13 +55,15 @@ namespace Project_2
                 }
                 //Console.WriteLine("{0} is waiting for a price cut to buy tickets", Thread.CurrentThread.Name);   
             }
-            Console.WriteLine("{0} terminating", Thread.CurrentThread.Name);
         }
         public void ticketsOnSale(Int32 p)
         {
-            willOrder = true;
-            salePrice = p;
-            saleAirline = Thread.CurrentThread.Name;
+            if(ticketsBought < ticketsNeeded)
+            {
+                willOrder = true;
+                salePrice = p;
+                saleAirline = Thread.CurrentThread.Name;
+            }
         }
         public void placeOrder(Int32 p)
         {
@@ -70,10 +72,12 @@ namespace Project_2
             if (p < 100)
             {
                 amountOfTickets = 20;
+                ticketsBought += 20;
             }
             else
             {
                 amountOfTickets = 10;
+                ticketsBought += 10;
             }
 
             //generate a random number between 4000 and 8000 to simulate valid and invalid credit cards
