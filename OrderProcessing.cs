@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Project_2
 {
+    public delegate void orderConfirmationDelegate(Int32 amount, Int32 cardNo, string receiverId, string senderId, double unitPrice, string timestamp);
     class OrderProcessing
     {
+        public static event orderConfirmationDelegate orderConfirmed;
         public const double TAX = 4.5;
         public const Int32 locationFee = 10;
         private static Order order;
@@ -31,10 +31,8 @@ namespace Project_2
                 //calculates the amount based on different factors
                 double basePrice = order.getUnitPrice() * order.getAmount();
                 double amount = basePrice + (basePrice * 4.50) + 10;
-                //this.confirmation(amount);
-                //Console.WriteLine("Valid card number.");
-                Console.WriteLine("[{0}]: {1} has successfully purchased {2} tickets from {3} for ${4}", order.getTimestamp(), order.getSenderId(), 
-                    order.getAmount(), order.getReceiverID(), amount);
+                order.setTotalPrice(amount);
+                orderConfirmed(order.getAmount(), order.getCardNo(), order.getReceiverID(), order.getSenderId(), order.getUnitPrice(), order.getTimestamp());
             }
         }
     }

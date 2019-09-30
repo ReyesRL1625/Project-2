@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 namespace Project_2
 {
     //declaring a delegate container for the priceCutDelegate signature
     public delegate void priceCutDelegate(Int32 p);
+    public delegate void orderConfirmationDelegate(Int32 amount, Int32 cardNo, string receiverId, string senderId, Int32 unitPrice, string timestamp);
 
     class Airline
     {
         //define a price cut event named priceCut
         public static event priceCutDelegate priceCut;
+        public static event orderConfirmationDelegate orderConfirmed;
 
         //arrray of integers used to simulate prices for different days of the week
         private Int32[] pricesForWeek;
@@ -181,4 +181,5 @@ namespace Project_2
 
         }
     }
+
 }

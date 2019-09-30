@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 namespace Project_2
@@ -108,6 +106,12 @@ namespace Project_2
 
         }
 
+        public void orderConfirmationDelegate(Int32 amount, Int32 cardNo, string receiverId, string senderId, double unitPrice, string timestamp)
+        {
+            Console.WriteLine("Order confirmed");
+
+
+        }
         //method in charge of getting the time stamp
         public string getTimestamp()
         {
