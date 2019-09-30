@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 namespace Project_2
@@ -55,18 +53,23 @@ namespace Project_2
                     buffer[0].setSenderId(newSenderId);
                     buffer[0].setUnitPrice(newUnitPrice);
                     buffer[0].setTimeStamp(timestamp);
+                    //if the airline is southwest
                     if(newReceiverId.CompareTo("Southwest") == 0)
                     {
+                        //set it to true
                         Cell1ForSouthwest = true;
                     }
                     else
                     {
+                        //set southwest to false
                         Cell1ForSouthwest = false;
                     }
+                    //indicates the cell is not empty
                     Cell1Writeable = false;
                 }
                 finally
                 {
+                    //exit the monitor for the buffer at [0]
                     Monitor.Exit(buffer[0]);
                 }
                 
@@ -84,18 +87,23 @@ namespace Project_2
                     buffer[1].setSenderId(newSenderId);
                     buffer[1].setUnitPrice(newUnitPrice);
                     buffer[1].setTimeStamp(timestamp);
+                    //if the airline is southwest
                     if (newReceiverId.CompareTo("Southwest") == 0)
                     {
+                        //set the cell for southwest to true
                         Cell2ForSouthwest = true;
                     }
                     else
                     {
+                        //set it to false
                         Cell2ForSouthwest = false;
                     }
+                    //indicate that the cell is not empty
                     Cell2Writeable = false;
                 }
                 finally
                 {
+                    //exit the monitor for the buffer at [1]
                     Monitor.Exit(buffer[1]);
                 }
                 
@@ -113,27 +121,35 @@ namespace Project_2
                     buffer[2].setSenderId(newSenderId);
                     buffer[2].setUnitPrice(newUnitPrice);
                     buffer[2].setTimeStamp(timestamp);
+                    //if the airline is southwest
                     if (newReceiverId.CompareTo("Southwest") == 0)
                     {
+                        //set the cell for southwest to true
                         Cell3ForSouthwest = true;
                     }
                     else
                     {
+                        //set it to false
                         Cell3ForSouthwest = false;
                     }
+                    //indicate that the cell is not empty
                     Cell3Writeable = false;
                 }
                 finally
                 {
+                    //exit the buffer
                     Monitor.Exit(buffer[2]);
                 }
             }
             
         }
 
+        //method to get a cell from the buffer
         public Order getOneCell()
         {
+            //creates a new empty order
             Order temp = null;
+            //if the cell is not writeable (not empty)
             if (!Cell1Writeable)
             {
                 //if order is not corresponding to the thread trying to get the order, don't let it get a cell 
@@ -144,10 +160,13 @@ namespace Project_2
                 Monitor.Enter(buffer[0]);
                 try
                 {
-                   // Console.WriteLine("Getting a cell at index 0");
+                    //indicates that the cell is empty
                     Cell1Writeable = true;
+                    //stores the order in a temporary location
                     temp = buffer[0];
+                    //resets the buffer
                     buffer[0] = new Order();
+                    //returns the order
                     return temp;
                 }
                 finally
@@ -165,10 +184,13 @@ namespace Project_2
                 Monitor.Enter(buffer[1]);
                 try
                 {
-                    //Console.WriteLine("Getting a cell at index 1");
+                    //indicates that the cell is empty
                     Cell2Writeable = true;
+                    //stores the order in a temporary location
                     temp = buffer[1];
+                    //creates a new order in that cell
                     buffer[1] = new Order();
+                    //returns the order
                     return temp;
                 }
                 finally
@@ -188,10 +210,13 @@ namespace Project_2
                 Monitor.Enter(buffer[2]);
                 try
                 {
-                    //Console.WriteLine("Getting a cell at index 2");
+                    //indicates the cell is empty
                     Cell3Writeable = true;
+                    //stores the order in a temporary location
                     temp = buffer[2];
+                    //creates a new order in that cell
                     buffer[2] = new Order();
+                    //returns the order
                     return temp;
                 }
                 finally
