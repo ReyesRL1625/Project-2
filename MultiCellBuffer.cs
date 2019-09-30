@@ -35,7 +35,7 @@ namespace Project_2
             }
         }
 
-        public void setOneCell(Int32 newAmount, Int32 newCardNo, string newReceiverId, string newSenderId, Int32 newUnitPrice, Int32 timestamp)
+        public void setOneCell(Int32 newAmount, Int32 newCardNo, string newReceiverId, string newSenderId, Int32 newUnitPrice, DateTime timestamp)
         {
             //enter the set one cell method
             Console.WriteLine("Order sent by {0} to {1} for the price of {2}", newSenderId, newReceiverId, newUnitPrice);

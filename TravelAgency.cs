@@ -79,8 +79,8 @@ namespace Project_2
             //generate a random number between 4000 and 8000 to simulate valid and invalid credit cards
             Int32 rand = rnd.Next(4000, 8000);
             //Gets the time stamp
-            Int32 timeStamp = getTimestamp();
-            Thread.Sleep(2000);
+            DateTime timeStamp = getTimestamp();
+            Thread.Sleep(1000);
             tBuffer.setOneCell(amountOfTickets, rand, saleAirline, Thread.CurrentThread.Name, p, timeStamp);
 
             //emit an event when an order has been placed
@@ -100,19 +100,21 @@ namespace Project_2
             }
         }
 
-        public void orderConfirmationDelegate(Int32 amount, Int32 cardNo, string receiverId, string senderId, double unitPrice, Int32 timestamp, double totalPrice)
+        public void orderConfirmationDelegate(Int32 amount, Int32 cardNo, string receiverId, string senderId, double unitPrice, DateTime timestamp, double totalPrice)
         {
             string travelAgencyIDStr = "Travel Agency " + travelAgencyID.ToString();
             if(travelAgencyIDStr.CompareTo(senderId) == 0)
             {
-                Console.WriteLine("[Duration: {0} seconds] {1} successfully purchased {2} tickets from {3} for a total of ${4}, ${5} each", getTimestamp() - timestamp, senderId, amount, receiverId, totalPrice, unitPrice);
+                TimeSpan totaltime = DateTime.Now.Subtract(timestamp);
+
+                Console.WriteLine("[Duration: {0} seconds] {1} successfully purchased {2} tickets from {3} for a total of ${4}, ${5} each", totaltime.TotalSeconds, senderId, amount, receiverId, totalPrice, unitPrice);
 
             }
         }
         //method in charge of getting the time stamp
-        public Int32 getTimestamp()
+        public DateTime getTimestamp()
         {
-            return DateTime.Now.Second;
+            return DateTime.Now;
         }
 
     }
