@@ -2,19 +2,17 @@
 
 namespace Project_2
 {
-    public delegate void orderConfirmationDelegate(Int32 amount, Int32 cardNo, string receiverId, string senderId, double unitPrice, string timestamp);
+    public delegate void orderConfirmationDelegate(Int32 amount, Int32 cardNo, string receiverId, string senderId, double unitPrice, string timestamp, double totalPrice);
     class OrderProcessing
     {
         public static event orderConfirmationDelegate orderConfirmed;
         public const double TAX = 4.5;
         public const Int32 locationFee = 10;
-        private static Order order;
-        private ConfirmationBuffer confirmationBuffer;
+        private Order order;
         public OrderProcessing(Order newOrder)
         {
             //instantiates thew order object
             order = newOrder;
-            //confirmationBuffer = new ConfirmationBuffer();
         }
 
         public void processOrder()
@@ -32,7 +30,7 @@ namespace Project_2
                 double basePrice = order.getUnitPrice() * order.getAmount();
                 double amount = basePrice + (basePrice * 4.50) + 10;
                 order.setTotalPrice(amount);
-                orderConfirmed(order.getAmount(), order.getCardNo(), order.getReceiverID(), order.getSenderId(), order.getUnitPrice(), order.getTimestamp());
+                orderConfirmed(order.getAmount(), order.getCardNo(), order.getReceiverID(), order.getSenderId(), order.getUnitPrice(), order.getTimestamp(), amount);
             }
         }
     }

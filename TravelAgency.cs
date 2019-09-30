@@ -22,9 +22,6 @@ namespace Project_2
         //buffer for initial orders
         MultiCellBuffer tBuffer;
 
-        //confirmation buffer used for returning confirmed orders to travel agency
-        ConfirmationBuffer tConfirmBuffer;
-
         //ID used to differentiate different travel agency threads
         private Int32 travelAgencyID;
 
@@ -33,10 +30,9 @@ namespace Project_2
         private string saleAirline;
 
         //constructor for travel agency with two buffers and the travel agency ID
-        public TravelAgency(MultiCellBuffer newMBuffer, ConfirmationBuffer newCBuffer, Int32 newTravelAgencyID)
+        public TravelAgency(MultiCellBuffer newMBuffer, Int32 newTravelAgencyID)
         {
             tBuffer = newMBuffer;
-            tConfirmBuffer = newCBuffer;
             ticketsBought = 0;
             travelAgencyID = newTravelAgencyID;
             willOrder = false;
@@ -106,7 +102,7 @@ namespace Project_2
 
         }
 
-        public void orderConfirmationDelegate(Int32 amount, Int32 cardNo, string receiverId, string senderId, double unitPrice, string timestamp)
+        public void orderConfirmationDelegate(Int32 amount, Int32 cardNo, string receiverId, string senderId, double unitPrice, string timestamp, double totalPrice)
         {
             Console.WriteLine("Order confirmed");
 
