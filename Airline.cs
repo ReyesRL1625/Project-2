@@ -5,13 +5,11 @@ namespace Project_2
 {
     //declaring a delegate container for the priceCutDelegate signature
     public delegate void priceCutDelegate(Int32 p);
-    public delegate void orderConfirmationDelegate(Int32 amount, Int32 cardNo, string receiverId, string senderId, Int32 unitPrice, string timestamp);
 
     class Airline
     {
         //define a price cut event named priceCut
         public static event priceCutDelegate priceCut;
-        public static event orderConfirmationDelegate orderConfirmed;
 
         //arrray of integers used to simulate prices for different days of the week
         private Int32[] pricesForWeek;
@@ -27,7 +25,6 @@ namespace Project_2
 
         //multicell buffer and confirmation buffer for the orders
         MultiCellBuffer aBuffer;
-        ConfirmationBuffer aConfirmBuffer;
 
         //integer that represents the current day of the week in the range of 0 to 6
         private Int32 currentDay;
@@ -39,10 +36,9 @@ namespace Project_2
         private string orderAirlineName;
 
         //airline constructor with two buffers
-        public Airline(MultiCellBuffer newBuffer, ConfirmationBuffer newCBufffer, string newAirlineName)
+        public Airline(MultiCellBuffer newBuffer, string newAirlineName)
         {
             aBuffer = newBuffer;
-            aConfirmBuffer = newCBufffer;
             airlineName = newAirlineName;
             willProcessOrder = false;
             orderAirlineName = "";
@@ -166,6 +162,7 @@ namespace Project_2
             OrderProcessing orderProcessing = new OrderProcessing(order);
             Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));
             newOrder.Start();
+
             //Console.WriteLine("{0} started to process order", this.airlineName);
 
             if (order.getReceiverID().CompareTo("Southwest") == 0)
