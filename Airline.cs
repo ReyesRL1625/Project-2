@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 namespace Project_2
@@ -91,7 +89,6 @@ namespace Project_2
                     //Console.WriteLine("{0} had a price cut", Thread.CurrentThread.Name);
                 }
             }
-            //update the ticket price with the new price
             ticketPrice = price;
         }
 
@@ -133,14 +130,11 @@ namespace Project_2
 
         public Int32 pricingModel(Int32 currentDay)
         {
-            //changes the prices based on the day of the week
             Int32 p = pricesForWeek[currentDay];
             return p;
         }
-        //indicates that an order is available
         public void orderAvailable(string newOrderAirlineName)
         {
-            //sets variables that will assist in order details
             willProcessOrder = true;
             orderAirlineName = newOrderAirlineName;
         }
@@ -150,13 +144,27 @@ namespace Project_2
             Order order = aBuffer.getOneCell();
             if (order == null)
             {
+                //Console.WriteLine("Order not intended for {0}", Thread.CurrentThread.Name);
                 return;
-            } 
+            }
+
+            //Console.WriteLine("{0} was able to fetch the order from {1} for price of {2}", this.airlineName, order.getSenderId(), order.getUnitPrice());
+            /*
+            Order copyOfOrder = new Order();
+            copyOfOrder.setAmount(order.getAmount());
+            copyOfOrder.setCardNo(order.getCardNo());
+            copyOfOrder.setReceiverID(order.getReceiverID());
+            copyOfOrder.setSenderId(order.getSenderId());
+            copyOfOrder.setUnitPrice(order.getUnitPrice());
+            copyOfOrder.setTimeStamp(order.getTimestamp());
+            */        
             //creating new order processing thread to process the order
             OrderProcessing orderProcessing = new OrderProcessing(order);
             Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));
             newOrder.Start();
-            //checks to see whether or not the airline is southwest
+
+            //Console.WriteLine("{0} started to process order", this.airlineName);
+
             if (order.getReceiverID().CompareTo("Southwest") == 0)
             {
                 MyApplication.orderreceivedSouthwest.Set();
@@ -165,8 +173,10 @@ namespace Project_2
             {
                 MyApplication.orderreceivedDelta.Set();
             }
+
             MyApplication.multiCellBufferPool.Release();
 
         }
     }
+
 }

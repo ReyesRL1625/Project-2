@@ -25,7 +25,6 @@ namespace Project_2
         //ID used to differentiate different travel agency threads
         private Int32 travelAgencyID;
 
-        //other variables that assist in creating the order
         private bool willOrder;
         private Int32 salePrice;
         private string saleAirline;
@@ -58,14 +57,12 @@ namespace Project_2
             }
             Console.WriteLine("{0} terminating", Thread.CurrentThread.Name);
         }
-        //called when ticket prices drop
         public void ticketsOnSale(Int32 p)
         {
             willOrder = true;
             salePrice = p;
             saleAirline = Thread.CurrentThread.Name;
         }
-        //method for placing an order
         public void placeOrder(Int32 p)
         {
             Int32 amountOfTickets = 0;
@@ -81,29 +78,35 @@ namespace Project_2
 
             //generate a random number between 4000 and 8000 to simulate valid and invalid credit cards
             Int32 rand = rnd.Next(4000, 8000);
-            //Gets the time stamp and puts the thread to sleep
+            //Gets the time stamp
             string timeStamp = getTimestamp();
             Thread.Sleep(2000);
-            //sets a cell in the multi cell buffer with the order information
             tBuffer.setOneCell(amountOfTickets, rand, saleAirline, Thread.CurrentThread.Name, p, timeStamp);
 
             //emit an event when an order has been placed
             if (orderPlaced != null)
             {
-                //changes the airline that is the receiver of the order
                 orderPlaced(saleAirline);
             }
-            //if the sale airline is southwest
+            //Console.WriteLine("{0} sent an order", this.travelAgencyID);
+
             if(saleAirline.CompareTo("Southwest") == 0)
             {
-                //indicates an order has been received for southwest
                 MyApplication.orderreceivedSouthwest.WaitOne();
             }
             else
             {
-                //indicates an order has been received for delta
                 MyApplication.orderreceivedDelta.WaitOne();
             }
+                
+
+        }
+
+        public void orderConfirmationDelegate(Int32 amount, Int32 cardNo, string receiverId, string senderId, double unitPrice, string timestamp, double totalPrice)
+        {
+            Console.WriteLine("Order confirmed");
+
+
         }
         //method in charge of getting the time stamp
         public string getTimestamp()

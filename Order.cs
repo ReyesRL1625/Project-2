@@ -13,6 +13,8 @@ namespace Project_2
         private Int32 amount; //number of tickets to order
         private double unitPrice; //price for the bulk of tickets received from airline
         private string timestamp;
+        private string timestampReturn;
+        private double totalprice;
 
         public Order()
         {
@@ -21,6 +23,9 @@ namespace Project_2
             receiverID = "";
             amount = 0;
             unitPrice = 0;
+            timestamp = "";
+            timestampReturn = "";
+            totalprice = 0;
         }
         public string getSenderId()
         {
@@ -46,6 +51,14 @@ namespace Project_2
         {
             return timestamp;
         }
+        public string getTimestampReturn()
+        {
+            return timestampReturn;
+        }
+        public double getTotalPrice()
+        {
+            return totalprice;
+        }
         public void setSenderId(string newsenderid)
         {
             senderId = newsenderid;
@@ -69,6 +82,14 @@ namespace Project_2
         public void setTimeStamp(string newTimestamp)
         {
             timestamp = newTimestamp;
+        }
+        public void setTimeStampReturn(string newTimestampReturn)
+        {
+            timestampReturn = newTimestampReturn;
+        }
+        public void setTotalPrice(double newTotalPrice)
+        {
+            totalprice = newTotalPrice;
         }
     }
 }

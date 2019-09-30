@@ -30,7 +30,6 @@ namespace Project_2
             //create a multicell buffer, a confirmation buffer, and release three resources for the multicellbuffer
             buffer = new MultiCellBuffer();
             multiCellBufferPool.Release(3);
-            ConfirmationBufferPool.Release(5);
 
 
             //create two airline objects and pass in the same multicellbuffer to be shared for receiving orders
