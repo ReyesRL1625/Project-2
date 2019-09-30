@@ -58,7 +58,6 @@ namespace Project_2
                     placeOrder(salePrice);
                     //Console.WriteLine("{0} is ready for next pricecut", Thread.CurrentThread.Name);
                     willOrder = false;
-                    MyApplication.orderreceived.WaitOne();
                 }
                 //Console.WriteLine("{0} is waiting for a price cut to buy tickets", Thread.CurrentThread.Name);   
             }
@@ -87,17 +86,26 @@ namespace Project_2
             Int32 rand = rnd.Next(4000, 8000);
             //Gets the time stamp
             string timeStamp = getTimestamp();
-
-            Thread.Sleep(4000);
+            Thread.Sleep(2000);
             tBuffer.setOneCell(amountOfTickets, rand, saleAirline, Thread.CurrentThread.Name, p, timeStamp);
-            
+
             //emit an event when an order has been placed
             if (orderPlaced != null)
             {
-                
                 orderPlaced(saleAirline);
             }
             //Console.WriteLine("{0} sent an order", this.travelAgencyID);
+
+            if(saleAirline.CompareTo("Southwest") == 0)
+            {
+                MyApplication.orderreceivedSouthwest.WaitOne();
+            }
+            else
+            {
+                MyApplication.orderreceivedDelta.WaitOne();
+            }
+                
+
         }
 
         //method in charge of getting the time stamp

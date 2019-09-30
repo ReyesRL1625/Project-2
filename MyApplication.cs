@@ -22,7 +22,8 @@ namespace Project_2
         public static Semaphore multiCellBufferPool = new Semaphore(0, 3);
         public static Semaphore ConfirmationBufferPool = new Semaphore(0, 5);
 
-        public static AutoResetEvent orderreceived = new AutoResetEvent(false);
+        public static AutoResetEvent orderreceivedSouthwest = new AutoResetEvent(false);
+        public static AutoResetEvent orderreceivedDelta = new AutoResetEvent(false);
 
 
 

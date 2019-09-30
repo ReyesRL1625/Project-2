@@ -98,15 +98,14 @@ namespace Project_2
 
         public void airlineFunc()
         {
-            //keep the airline thread running until 5 price cuts have passed
-            while (numberOfPriceCuts <= 5)
+            //keep the airline thread running until 20 price cuts have passed
+            while (numberOfPriceCuts <= 20)
             {
 
                 if (willProcessOrder)
                 {
                     processOrder();
                     willProcessOrder = false;
-                    MyApplication.orderreceived.Set();
                 }
                 else
                 {
@@ -168,6 +167,16 @@ namespace Project_2
             Thread newOrder = new Thread(new ThreadStart(orderProcessing.processOrder));
             newOrder.Start();
             //Console.WriteLine("{0} started to process order", this.airlineName);
+
+            if (order.getReceiverID().CompareTo("Southwest") == 0)
+            {
+                MyApplication.orderreceivedSouthwest.Set();
+            }
+            else
+            {
+                MyApplication.orderreceivedDelta.Set();
+            }
+
             MyApplication.multiCellBufferPool.Release();
 
         }
