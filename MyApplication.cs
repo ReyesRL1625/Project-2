@@ -63,6 +63,7 @@ namespace Project_2
 
                 //Subscribing the travel agency object to the price cut event
                 Airline.priceCut += new priceCutDelegate(agency.ticketsOnSale);
+                OrderProcessing.orderConfirmed += new orderConfirmationDelegate(agency.orderConfirmationDelegate);
 
                 //create a new thread, rename it, and start it
                 travelAgency[i] = new Thread(new ThreadStart(agency.travelAgencyFunc));

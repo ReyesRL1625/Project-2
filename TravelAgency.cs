@@ -104,7 +104,7 @@ namespace Project_2
 
         public void orderConfirmationDelegate(Int32 amount, Int32 cardNo, string receiverId, string senderId, double unitPrice, string timestamp, double totalPrice)
         {
-            Console.WriteLine("Order confirmed");
+            Console.WriteLine("[{0}] to [{1}] {2} successfully purchased {3} tickets from {4} for a total of ${5}, ${6} each", timestamp, getTimestamp(), senderId, amount, receiverId, totalPrice, unitPrice);
 
 
         }
