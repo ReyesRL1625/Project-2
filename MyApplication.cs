@@ -33,8 +33,8 @@ namespace Project_2
 
 
             //create two airline objects and pass in the same multicellbuffer to be shared for receiving orders
-            Airline airline1 = new Airline(buffer,  "Southwest");
-            Airline airline2 = new Airline(buffer,  "Delta");
+            Airline airline1 = new Airline(buffer, "Southwest");
+            Airline airline2 = new Airline(buffer, "Delta");
 
             //create two airline threads, name them, and start their airlinefunc running as a thread
             airline1T = new Thread(new ThreadStart(airline1.airlineFunc));

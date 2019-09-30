@@ -2,7 +2,7 @@
 
 namespace Project_2
 {
-    public delegate void orderConfirmationDelegate(Int32 amount, Int32 cardNo, string receiverId, string senderId, double unitPrice, string timestamp, double totalPrice);
+    public delegate void orderConfirmationDelegate(Int32 amount, Int32 cardNo, string receiverId, string senderId, double unitPrice, Int32 timestamp, double totalPrice);
     class OrderProcessing
     {
         public static event orderConfirmationDelegate orderConfirmed;
