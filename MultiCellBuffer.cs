@@ -41,7 +41,7 @@ namespace Project_2
             Console.WriteLine("Order sent by {0} to {1} for the price of {2}", newSenderId, newReceiverId, newUnitPrice);
 
             //attempt to use cell 1, if not available, move to cell 2
-            if (Monitor.TryEnter(buffer[0]))
+            if (Cell1Writeable && Monitor.TryEnter(buffer[0]))
             {
                 try
                 {
@@ -54,7 +54,7 @@ namespace Project_2
                     buffer[0].setUnitPrice(newUnitPrice);
                     buffer[0].setTimeStamp(timestamp);
                     //if the airline is southwest
-                    if(newReceiverId.CompareTo("Southwest") == 0)
+                    if (newReceiverId.CompareTo("Southwest") == 0)
                     {
                         //set it to true
                         Cell1ForSouthwest = true;
@@ -72,10 +72,10 @@ namespace Project_2
                     //exit the monitor for the buffer at [0]
                     Monitor.Exit(buffer[0]);
                 }
-                
-                
+
+
             }
-            else if (Monitor.TryEnter(buffer[1]))
+            else if (Cell2Writeable && Monitor.TryEnter(buffer[1]))
             {
                 try
                 {
@@ -106,10 +106,11 @@ namespace Project_2
                     //exit the monitor for the buffer at [1]
                     Monitor.Exit(buffer[1]);
                 }
-                
+
             }
-            else
+            else if (Cell3Writeable)
             {
+                //block the thread until the last cell is available
                 Monitor.Enter(buffer[2]);
                 try
                 {
@@ -141,7 +142,7 @@ namespace Project_2
                     Monitor.Exit(buffer[2]);
                 }
             }
-            
+
         }
 
         //method to get a cell from the buffer
