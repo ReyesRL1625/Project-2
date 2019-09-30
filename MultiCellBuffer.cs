@@ -151,14 +151,8 @@ namespace Project_2
             //creates a new empty order
             Order temp = null;
             //if the cell is not writeable (not empty)
-            if (!Cell1Writeable)
+            if (!Cell1Writeable && ((Thread.CurrentThread.Name.CompareTo("Southwest") == 0 && Cell1ForSouthwest) || (Thread.CurrentThread.Name.CompareTo("Southwest") != 0 && !Cell1ForSouthwest)) && Monitor.TryEnter(buffer[0]))
             {
-                //if order is not corresponding to the thread trying to get the order, don't let it get a cell 
-                if (!((Thread.CurrentThread.Name.CompareTo("Southwest") == 0 && Cell1ForSouthwest) || (Thread.CurrentThread.Name.CompareTo("Southwest") != 0 && !Cell1ForSouthwest)))
-                {
-                    return null;
-                }
-                Monitor.Enter(buffer[0]);
                 try
                 {
                     //indicates that the cell is empty
@@ -175,14 +169,8 @@ namespace Project_2
                     Monitor.Exit(temp);
                 }
             }
-            else if (!Cell2Writeable)
+            else if (!Cell2Writeable && ((Thread.CurrentThread.Name.CompareTo("Southwest") == 0 && Cell2ForSouthwest) || (Thread.CurrentThread.Name.CompareTo("Southwest") != 0 && !Cell2ForSouthwest)) && Monitor.TryEnter(buffer[1]))
             {
-                //if order is not corresponding to the thread trying to get the order, don't let it get a cell 
-                if (!((Thread.CurrentThread.Name.CompareTo("Southwest") == 0 && Cell2ForSouthwest) || (Thread.CurrentThread.Name.CompareTo("Southwest") != 0 && !Cell2ForSouthwest)))
-                {
-                    return null;
-                }
-                Monitor.Enter(buffer[1]);
                 try
                 {
                     //indicates that the cell is empty
@@ -200,15 +188,8 @@ namespace Project_2
                 }
             }
 
-            else 
+            else if (!Cell3Writeable && ((Thread.CurrentThread.Name.CompareTo("Southwest") == 0 && Cell3ForSouthwest) || (Thread.CurrentThread.Name.CompareTo("Southwest") != 0 && !Cell3ForSouthwest)) && Monitor.TryEnter(buffer[2]))
             {
-                //if order is not corresponding to the thread trying to get the order, don't let it get a cell 
-                if (!((Thread.CurrentThread.Name.CompareTo("Southwest") == 0 && Cell3ForSouthwest) || (Thread.CurrentThread.Name.CompareTo("Southwest") != 0 && !Cell3ForSouthwest)))
-                {
-                    return null;
-                }
-                    //if no other cell is available force the airline to wait for one of the cells to read
-                Monitor.Enter(buffer[2]);
                 try
                 {
                     //indicates the cell is empty
@@ -224,6 +205,10 @@ namespace Project_2
                 {
                     Monitor.Exit(temp);
                 }
+            }
+            else
+            {
+                return null;
             }
         }
     }
