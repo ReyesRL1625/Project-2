@@ -127,7 +127,8 @@ namespace Project_2
             }
 
             Console.WriteLine("{0} Thread ended", Thread.CurrentThread.Name);
-
+            Console.WriteLine("Zadig Alvarez: 50%");
+            Console.WriteLine("Rebecca Reyes: 50%");
         }
 
         //if available tickets are greater than 100, do a discount of $20
