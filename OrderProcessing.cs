@@ -9,7 +9,6 @@ namespace Project_2
         public const double TAX = 4.5;
         public const Int32 locationFee = 10;
         private static Order order;
-        private ConfirmationBuffer confirmationBuffer;
         public OrderProcessing(Order newOrder)
         {
             //instantiates thew order object

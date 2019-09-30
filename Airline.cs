@@ -27,7 +27,6 @@ namespace Project_2
 
         //multicell buffer and confirmation buffer for the orders
         MultiCellBuffer aBuffer;
-        ConfirmationBuffer aConfirmBuffer;
 
         //integer that represents the current day of the week in the range of 0 to 6
         private Int32 currentDay;
@@ -39,10 +38,9 @@ namespace Project_2
         private string orderAirlineName;
 
         //airline constructor with two buffers
-        public Airline(MultiCellBuffer newBuffer, ConfirmationBuffer newCBufffer, string newAirlineName)
+        public Airline(MultiCellBuffer newBuffer, string newAirlineName)
         {
             aBuffer = newBuffer;
-            aConfirmBuffer = newCBufffer;
             airlineName = newAirlineName;
             willProcessOrder = false;
             orderAirlineName = "";

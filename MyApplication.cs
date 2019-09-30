@@ -8,9 +8,6 @@ namespace Project_2
         //buffer to be used for sending and recieving initial orders
         public static MultiCellBuffer buffer;
 
-        //buffer used for confirming orders
-        public static ConfirmationBuffer confirmBuffer;
-
         //constant number of travel agency threads running
         public const Int32 NumberOfTravelAgencies = 5;
 
@@ -32,14 +29,13 @@ namespace Project_2
 
             //create a multicell buffer, a confirmation buffer, and release three resources for the multicellbuffer
             buffer = new MultiCellBuffer();
-            confirmBuffer = new ConfirmationBuffer();
             multiCellBufferPool.Release(3);
             ConfirmationBufferPool.Release(5);
 
 
             //create two airline objects and pass in the same multicellbuffer to be shared for receiving orders
-            Airline airline1 = new Airline(buffer, confirmBuffer, "Southwest");
-            Airline airline2 = new Airline(buffer, confirmBuffer, "Delta");
+            Airline airline1 = new Airline(buffer, "Southwest");
+            Airline airline2 = new Airline(buffer, "Delta");
 
             //create two airline threads, name them, and start their airlinefunc running as a thread
             airline1T = new Thread(new ThreadStart(airline1.airlineFunc));
@@ -64,7 +60,7 @@ namespace Project_2
             for (int i = 0; i < 5; i++)
             {
                 //create a travel agency object with it's own ID
-                agency = new TravelAgency(buffer, confirmBuffer, (i+1));
+                agency = new TravelAgency(buffer, (i+1));
 
                 //Subscribing the travel agency object to the price cut event
                 Airline.priceCut += new priceCutDelegate(agency.ticketsOnSale);
